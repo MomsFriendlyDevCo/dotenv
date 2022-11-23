@@ -1,0 +1,52 @@
+{
+  "name": "@momsfriendlydevco/dotenv",
+  "version": "0.0.0",
+  "description": "DotEnv with schemas, validation and multi-file support",
+  "scripts": {
+    "lint": "eslint lib",
+    "test": "mocha"
+  },
+  "type": "module",
+  "imports": {
+    "#lib/*": "./lib/*.js"
+  },
+  "exports": {
+    ".": "./lib/dotenv.js",
+    "./*": "./lib/*.js"
+  },
+  "main": "lib/parse.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MomsFriendlyDevCo/dotenv.git"
+  },
+  "author": "Matt Carter <matt@mfdc.biz>",
+  "bugs": {
+    "url": "https://github.com/MomsFriendlyDevCo/dotenv/issues"
+  },
+  "homepage": "https://github.com/MomsFriendlyDevCo/dotenv#readme",
+  "engineStrict": true,
+  "engines": {
+    "node": ">=16.14.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "@momsfriendlydevco/es6": "^1.0.0",
+    "chai": "^4.3.7",
+    "eslint": "^8.28.0",
+    "mocha": "^10.1.0"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "env": {
+      "es6": true,
+      "node": true,
+      "mocha": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 13,
+      "sourceType": "module"
+    }
+  }
+}
