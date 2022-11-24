@@ -1,6 +1,6 @@
 {
   "name": "@momsfriendlydevco/dotenv",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "DotEnv with schemas, validation and multi-file support",
   "scripts": {
     "lint": "eslint lib",
