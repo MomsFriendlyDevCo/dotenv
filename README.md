@@ -1,6 +1,6 @@
 @MomsFriendlyDevCo/DotEnv
 =========================
-DotEnv parser with schemas, defaults, validators, multiple inputs and more.
+DotEnv with schema, validation, expiring keys and multi-input support.
 
 Features:
 
