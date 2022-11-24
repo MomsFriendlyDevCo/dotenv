@@ -1,7 +1,7 @@
 {
   "name": "@momsfriendlydevco/dotenv",
   "version": "1.0.0",
-  "description": "DotEnv with schemas, validation and multi-file support",
+  "description": "DotEnv with schema, validation, expiring keys and multi-input support",
   "scripts": {
     "lint": "eslint lib",
     "test": "mocha"
