@@ -1,11 +1,11 @@
-import dotenv from '#lib/dotenv';
+import {Schema} from '#lib/schema';
 import {expect} from 'chai';
 
 describe('dotenv.Schema', ()=> {
 
 	it('should apply simple schema defaults to empty config', ()=>
 		expect(
-			(new dotenv.Schema({
+			(new Schema({
 				foo: {default: 'Foo'},
 				bar: {default: 123},
 				baz: {default: ()=> 456},
@@ -19,7 +19,7 @@ describe('dotenv.Schema', ()=> {
 
 	it('should apply simple schema when values are present', ()=>
 		expect(
-			(new dotenv.Schema({
+			(new Schema({
 				foo: {default: 'Foo'},
 				bar: {default: 123},
 				baz: {default: ()=> 456},
@@ -35,7 +35,7 @@ describe('dotenv.Schema', ()=> {
 
 	it('should type cast', ()=>
 		expect(
-			(new dotenv.Schema({
+			(new Schema({
 				foo: Number,
 				bar: {type: Number},
 				baz: 'NUMBER',
@@ -50,6 +50,5 @@ describe('dotenv.Schema', ()=> {
 			baz: 3,
 		})
 	);
-
 
 });

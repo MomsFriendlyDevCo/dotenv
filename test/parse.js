@@ -1,12 +1,12 @@
 import {dirName} from '@momsfriendlydevco/es6';
-import dotenv from '#lib/dotenv';
+import {parse} from '#lib/parse';
 import {expect} from 'chai';
 
 describe('dotenv.parse()', ()=> {
 
 	it('should parse simple files', ()=>
 		expect(
-			dotenv.parse("DB_HOST=Foo\nDB_PASS=Bar")
+			parse("DB_HOST=Foo\nDB_PASS=Bar")
 		).to.deep.equal({
 			DB_HOST: 'Foo',
 			DB_PASS: 'Bar',
@@ -15,7 +15,7 @@ describe('dotenv.parse()', ()=> {
 
 	it('should parse files', ()=> {
 		expect(
-			dotenv.parse(`${dirName()}/data/.env`)
+			parse(`${dirName()}/data/.env`)
 		).to.deep.equal({
 			'BASIC': 'basic',
 			'AFTER_LINE': 'after_line',
