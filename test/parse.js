@@ -2,7 +2,7 @@ import {dirName} from '@momsfriendlydevco/es6';
 import dotenv from '#lib/dotenv';
 import {expect} from 'chai';
 
-describe('@momsfriendlydevco/dotenv', ()=> {
+describe('dotenv.parse()', ()=> {
 
 	it('should parse simple files', ()=>
 		expect(
