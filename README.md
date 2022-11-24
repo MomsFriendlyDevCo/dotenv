@@ -10,7 +10,7 @@ Features:
 
 
 ```javascript
-import dotenv from '#lib/dotenv';
+import dotenv from '@momsfriendlydevco/dotenv';
 
 let config = dotenv
     .parse('.env')
@@ -20,6 +20,7 @@ let config = dotenv
         password: {
             type: 'string', // Custom support also for your own types
             cast: v => v.toLowerCase(), // Case incoming values
+            destruct: '10s', // Variables not allowed to be read after this time from start (timestring)
         },
     })
     .value() //= {host: String, port: Number, password: String}
