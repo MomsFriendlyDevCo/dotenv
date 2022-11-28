@@ -26,7 +26,7 @@ describe('dotenv', ()=> {
 		expect(config).to.have.property('BAR', 123);
 	});
 
-	it('should support destruct', resolve => {
+	it('should support destruct (on key access)', resolve => {
 		let config = dotenv
 			.parse('PASS=hello-world')
 			.schema({
@@ -47,6 +47,29 @@ describe('dotenv', ()=> {
 
 			resolve();
 		}, 200);
+	});
+
+	it.only('should support destruct (automatically on timeout)', function(resolve) {
+		this.timeout(10 * 1000);
+
+		let config = dotenv
+			.parse('SECRET=Yep')
+			.schema({
+				SECRET: {type: 'string', destruct: {at: '5s', destructValue: 'NOPE!'}},
+			})
+			.value()
+
+		expect(config).to.be.an('object');
+
+		expect(config).to.have.property('SECRET');
+		expect(config.SECRET).to.be.deep.equal('Yep');
+
+		setTimeout(()=> {
+			expect(config).to.have.property('SECRET');
+			expect(config.SECRET).to.be.deep.equal('NOPE!');
+
+			resolve();
+		}, 5500);
 	});
 
 });
