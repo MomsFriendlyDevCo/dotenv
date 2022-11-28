@@ -6,7 +6,7 @@ Features:
 
 * All standard DotEnv parser / reader
 * Mongo like Schema support
-* Fully synchronous - config is available immediately
+* Entirely synchronous - config is available immediately, no waiting on promises or other race conditions
 
 
 ```javascript

@@ -26,7 +26,7 @@ describe('dotenv', ()=> {
 		expect(config).to.have.property('BAR', 123);
 	});
 
-	it.skip('should support destruct', resolve => {
+	it('should support destruct', resolve => {
 		let config = dotenv
 			.parse('PASS=hello-world')
 			.schema({
@@ -40,16 +40,13 @@ describe('dotenv', ()=> {
 		expect(config.PASS).to.be.deep.equal('hello-world');
 
 		setTimeout(()=> {
-			console.log('PRE TEST');
-			expect(config).to.have.property('PASS');
-
 			expect(()=> {
 				let readValue = config.PASS;
 				console.log('I got', readValue);
 			}).to.throw();
 
 			resolve();
-		}, 100);
+		}, 200);
 	});
 
 });
