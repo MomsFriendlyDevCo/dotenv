@@ -49,7 +49,7 @@ describe('dotenv', ()=> {
 		}, 200);
 	});
 
-	it.only('should support destruct (automatically on timeout)', function(resolve) {
+	it('should support destruct (automatically on timeout)', function(resolve) {
 		this.timeout(10 * 1000);
 
 		let config = dotenv
