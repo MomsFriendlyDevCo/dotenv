@@ -76,20 +76,14 @@ Returns the chainable DotEnv instance.
 FieldSchemas are made up of any of the following properties. If a simple string or built-in type is provided instead it is assumed as the `type` subkey.
 
 ```
-* @property {boolean} [required=true] Whether the field is required
-* @property {Array<*>|*} [type] Either a instance of class the object (lookup table via `aliases`) or the string representation of any key in `types`
-* @property {*} [default] Default value to use if none is specified. If a function it is run as `(fieldSchema)` and the result used.
-* @property {function|string} [validate] Function to validate an input, must return true. If a string is given the cast function is retrieved from the type instead. Called as `(value, fieldSchema)`
-* @property {function|string} [cast] Optional function to convert user input to a native type. If a string is given the validate is retrieved from that type instead. Called as `(value, fieldSchema)` and expected to either throw or return falsy - undefined is ignored
-* @property {Object|string|Date} [destruct] Optional destruction config. See `ConfigDestruct` for details
-```
-
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-
-
-FIXME: Add options
+| Option          | Type                         | Default | Description                                                                                                                                                                                                                           |
+|-----------------|------------------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `required=true` | `Boolean`                    | `true`  | Whether the field is required                                                                                                                                                                                                         |
+| `type`          | `Array<*>` / `*`             |         | Either a instance of class the object (lookup table via `aliases`) or the string representation of any key in `types`                                                                                                                 |
+| `default`       | `*`                          |         | Default value to use if none is specified. If a function it is run as `(fieldSchema)` and the result used.                                                                                                                            |
+| `validate`      | `Function` / `String`        |         | Function to validate an input, must return true. If a string is given the cast function is retrieved from the type instead. Called as `(value, fieldSchema)`                                                                          |
+| `cast`          | `Function` / `String`        |         | Optional function to convert user input to a native type. If a string is given the validate is retrieved from that type instead. Called as `(value, fieldSchema)` and expected to either throw or return falsy - undefined is ignored |
+| `destruct`      | `Object` / `String` / `Date` |         | Optional destruction config. See `ConfigDestruct` for details                                                                                                                                                                         |
 
 
 DotEnv.value()
@@ -102,4 +96,20 @@ Built in types
 The following is a list of built in types which provide a handy shorthand for various functionality.
 
 
-FIXME: List of types
+| Type       | Example                                                     | Notes                                               | Additional properties                                          |
+|------------|-------------------------------------------------------------|-----------------------------------------------------|----------------------------------------------------------------|
+| `any`      | `KEY=something `                                            | Any type is valid                                   |                                                                |
+| `array`    | `KEY=foo,Bar, Baz`                                          | CSV of string values                                | `min` / `max` for array length                                 |
+| `boolean`  | `KEY=yes` / `key=true`                                      | Parse common 'truthy' strings into a boolean        |                                                                |
+| `date`     | `KEY=2022-12-06` / `KEY=2022-12-06T13:20+10:00`             | Parse Date-like or ISO dates into a Date object `   | `min` / `max` for date period                                  |
+| `duration` | `KEY=2h37m`                                                 | Parse a valid timestring duration into milliseconds | `unit=ms` for the unit to parse to                             |
+| `email`    | `KEY=a@b.com` / `KEY=Simon Jones <simon@thing.com>`         | A single email in short or long form                | `name=true` to allow a long form address                       |
+| `emails`   | `KEY=a@b.com, someone@somewhere.com, J Smith <j@smith.com>` | A CSV of email addreses                             | `name=true` to allow a long form address                       |
+| `float`    | `KEY=3.1415`                                                | Any floating value                                  | `min` / `max` for value                                        |
+| `keyvals`  | `KEY=key1=val1, key2 = val 2, key3=val3`                    | An object composed of key=vals                      | `min` / `max` for key count                                    |
+| `mongoUri` | `KEY=mongodb+src://URL...`                                  | A valid MongoDB URI                                 |                                                                |
+| `number`   | `KEY=123`                                                   | A string parsed into a number                       | `float` to accept floating values, `min` / `max` for value     |
+| `object`   |                                                             | Alias for `keyvals`                                 |                                                                |
+| `set`      | `KEY=foo, bar, baz`                                         | CSV of values cast into a Set                       | `min` / `max` for value count                                  |
+| `string`   | `KEY=some long string`                                      | Any valid string                                    | `enum` for an array of values, `min` / `max` for string length |
+| `uri`      | `KEY=https://somewhere.com`                                 | A valid URI                                         |                                                                |
