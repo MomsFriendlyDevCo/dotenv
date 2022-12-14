@@ -55,4 +55,33 @@ describe('dotenv.parse()', ()=> {
 		})
 	});
 
+
+	it('should support merging multiple files (lazy invocation)', ()=> {
+		expect(
+			parse([
+				`${dirName()}/data/.env.foo`,
+				`${dirName()}/data/.env.bar`,
+				`${dirName()}/data/.env.baz`,
+			])
+		).to.deep.equal({
+			FOO: 'Foo!!!!',
+			BAR: 'Bar!',
+			BAZ: 'Baz!',
+		})
+	});
+
+	it('should support merging multiple files (specific invocation)', ()=> {
+		expect(
+			parse({path: [
+				`${dirName()}/data/.env.foo`,
+				`${dirName()}/data/.env.bar`,
+				`${dirName()}/data/.env.baz`,
+			]})
+		).to.deep.equal({
+			FOO: 'Foo!!!!',
+			BAR: 'Bar!',
+			BAZ: 'Baz!',
+		})
+	});
+
 });

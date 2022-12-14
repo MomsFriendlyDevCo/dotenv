@@ -14,7 +14,7 @@ Features:
 import dotenv from '@momsfriendlydevco/dotenv';
 
 let config = dotenv
-    .parse('.env') // Import from one or more files in order of precidence
+    .parse(['.env.example', '.env']) // Import from one or more files in order of precidence
     .importEnv({prefix: 'MY_APP_'}) // Import from process.env
     .schema({ // Apply a schema
         port: Number, // Simple schemas (`required` is implied for these)
