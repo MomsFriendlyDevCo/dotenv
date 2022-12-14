@@ -76,12 +76,22 @@ describe('dotenv.parse()', ()=> {
 				`${dirName()}/data/.env.foo`,
 				`${dirName()}/data/.env.bar`,
 				`${dirName()}/data/.env.baz`,
-			]})
+			]}, {allowMissing: false})
 		).to.deep.equal({
 			FOO: 'Foo!!!!',
 			BAR: 'Bar!',
 			BAZ: 'Baz!',
 		})
+	});
+
+	it('should support merging multiple files (specific invocation + missing should throw)', ()=> {
+		expect(()=>
+			parse({path: [
+				`${dirName()}/data/.env.foo`,
+				`${dirName()}/data/.env.barrrrrrr`,
+				`${dirName()}/data/.env.baz`,
+			]}, {allowMissing: false})
+		).to.throw(/ENOENT/)
 	});
 
 });

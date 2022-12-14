@@ -38,10 +38,20 @@ DotEnv (default export)
 Returns an instance of the DotEnv class.
 
 
-DotEnv.parse(files...)
+DotEnv.parse(source, options)
 ----------------------
 Read files from path (or relative to current directory) in presidence order.
+Source can be a path (string with no '='), paths (an array of strings) or raw blob data (string || buffer).
+
 Later files with keys will overwrite earlier ones.
+
+Options are:
+
+| Option              | Type                       | Default | Description                                               |
+|---------------------|----------------------------|---------|-----------------------------------------------------------|
+| `from`              | `String` / `Buffer`        |         | Source to parse instead of a file path                    |
+| `path`              | `String` / `Array<String>` |         | Source file(s) to parse in order (later overrides former) |
+| `allowMissing=true` | `Boolean`                  | `true`  | Skip over missing files, if falsy will throw instead      |
 
 Returns the chainable DotEnv instance.
 
