@@ -1,6 +1,8 @@
 import moment from 'moment';
 import {Schema} from '#lib/schema';
-import {expect} from 'chai';
+import chai, {expect} from 'chai';
+
+chai.config.truncateThreshold = 999;
 
 describe('dotenv.Schema', ()=> {
 
@@ -57,6 +59,24 @@ describe('dotenv.Schema', ()=> {
 
 describe('dotenv.Schema (validation)', ()=> {
 
+	it('meta: invalid', ()=> {
+		expect(()=>
+			new Schema({v: {type: '!!!INVALID!!!'}}).apply({v: 'FOO!'})
+		).to.throw();
+
+		expect(()=>
+			new Schema({v: '!!!INVALID!!!'}).apply({v: 'FOO!'})
+		).to.throw();
+
+		expect(()=>
+			new Schema({v: {type: false}}).apply({v: 'FOO!'})
+		).to.throw();
+
+		expect(()=>
+			new Schema({v: false}).apply({v: 'FOO!'})
+		).to.throw();
+	});
+
 	it('any', ()=> {
 		expect(()=>
 			new Schema({
@@ -107,7 +127,7 @@ describe('dotenv.Schema (validation)', ()=> {
 		).to.not.throw();
 	});
 
-	it.skip('boolean', ()=> {
+	it('boolean', ()=> {
 		expect(()=>
 			new Schema({
 				a: 'boolean',
@@ -125,7 +145,7 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(()=>
 			new Schema({
 				a: {type: 'boolean', true: ['yup']},
-				b: {type: 'boolean', false: ['nope']},
+				b: {type: Boolean, false: ['nope']},
 			}).apply({
 				a: 'yup',
 				b: 'nope',
@@ -183,7 +203,7 @@ describe('dotenv.Schema (validation)', ()=> {
 		).to.throw();
 	});
 
-	it.skip('email', ()=> {
+	it('email', ()=> {
 		expect(()=>
 			new Schema({v: 'email'}).apply({v: 'someone@somewhere.com'})
 		).to.not.throw();
@@ -197,7 +217,7 @@ describe('dotenv.Schema (validation)', ()=> {
 		).to.throw();
 	});
 
-	it.skip('emails', ()=> {
+	it('emails', ()=> {
 		expect(()=>
 			new Schema({v: {type: 'emails', min: 1, max: 2}}).apply({v: 'someone@somewhere.com'})
 		).to.not.throw();
@@ -259,7 +279,7 @@ describe('dotenv.Schema (validation)', ()=> {
 		).to.throw();
 	});
 
-	it.skip('mongoUri', ()=> {
+	it('mongoUri', ()=> {
 		expect(()=>
 			new Schema({v: 'mongoUri'}).apply({v: 'mongodb+srv://thing.com'})
 		).to.not.throw();
@@ -320,12 +340,6 @@ describe('dotenv.Schema (validation)', ()=> {
 
 		expect(()=>
 			new Schema({v: {type: 'string', enum: ['foo', 'bar', 'baz']}}).apply({v: 'BAZ!'})
-		).to.throw();
-	});
-
-	it('meta: invalid', ()=> {
-		expect(()=>
-			new Schema({v: {type: '!!!INVALID!!!'}}).apply({v: 'FOO!'})
 		).to.throw();
 	});
 
