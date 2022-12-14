@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {Schema} from '#lib/schema';
 import {expect} from 'chai';
 
@@ -50,5 +51,263 @@ describe('dotenv.Schema', ()=> {
 			baz: 3,
 		})
 	);
+
+});
+
+
+describe('dotenv.Schema (validation)', ()=> {
+
+	it('any', ()=> {
+		expect(()=>
+			new Schema({
+				a: 'any',
+				b: 'any',
+				c: 'any',
+				d: 'any',
+				e: 'any',
+				f: 'any',
+			}).apply({
+				a: 6,
+				b: 'string!',
+				c: false,
+				d: true,
+				e: [],
+				f: {},
+			})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'number', min: 10, max: 100}}).apply({v: 9})
+		).to.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'number', min: 10, max: 100}}).apply({v: 101})
+		).to.throw;
+	});
+
+	it('array', ()=> {
+		expect(()=>
+			new Schema({v: {type: 'array', min: 1, max: 3}}).apply({v: 'foo,bar'})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'array', min: 1, max: 3}}).apply({v: ''})
+		).to.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'array', min: 1, max: 3}}).apply({v: 'foo, bar,baz, quz'})
+		).to.throw;
+	});
+
+	it('boolean', ()=> {
+		expect(()=>
+			new Schema({
+				a: 'boolean',
+				b: Boolean,
+				c: {type: 'boolean'},
+				d: {type: Boolean},
+			}).apply({
+				a: 'y',
+				b: 'yes',
+				c: 'true',
+				d: 'false',
+			})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({
+				a: {type: 'boolean', true: ['yup']},
+			}).apply({
+				a: 'yup',
+			})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({
+				a: {type: 'boolean', true: ['1'], false: ['2']},
+			}).apply({
+				a: 'true',
+			})
+		).to.throw;
+	});
+
+	it('date', ()=> {
+		expect(()=>
+			new Schema({v: {
+				type: 'date',
+				min: moment().subtract(1, 'd').toDate(),
+				max: moment().add(1, 'd').toDate(),
+			}}).apply({v: new Date()})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {
+				type: 'date',
+				min: moment().subtract(1, 'd').toDate(),
+				max: moment().add(1, 'd').toDate(),
+			}}).apply({v: moment().subtract(1, 'w').toDate()})
+		).to.throw;
+
+		expect(()=>
+			new Schema({v: {
+				type: 'date',
+				min: moment().subtract(1, 'd').toDate(),
+				max: moment().add(1, 'd').toDate(),
+			}}).apply({v: moment().add(1, 'w').toDate()})
+		).to.throw;
+	});
+
+	it('duration', ()=> {
+		expect(()=>
+			new Schema({v: {
+				type: 'duration',
+			}}).apply({v: '10m'})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {
+				type: 'duration',
+			}}).apply({v: '2w'})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {
+				type: 'duration',
+			}}).apply({v: false})
+		).to.not.throw;
+	});
+
+	it('email', ()=> {
+		expect(()=>
+			new Schema({v: 'email'}).apply({v: 'someone@somewhere.com'})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: 'email'}).apply({v: 'Mr. Someone <someone@somewhere.com>'})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: 'email'}).apply({v: 'http://someone.com'})
+		).to.throw;
+	});
+
+	it('emails', ()=> {
+		expect(()=>
+			new Schema({v: {type: 'emails', min: 1, max: 2}}).apply({v: 'someone@somewhere.com'})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'emails', min: 1, max: 2}}).apply({v: 'Mr. Someone <someone@somewhere.com>'})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'emails', min: 1, max: 2}}).apply({v: 'http://someone.com'})
+		).to.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'emails', min: 1, max: 2}}).apply({v: ''})
+		).to.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'emails', min: 1, max: 2}}).apply({v: 'someone@somewhere.com, thing@thing.com, super@man.com'})
+		).to.throw;
+	});
+
+	it('float', ()=> {
+		expect(()=>
+			new Schema({v: {type: 'float', min: 1, max: 2}}).apply({v: 1})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'float', min: 1, max: 2}}).apply({v: 1.1})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'float', min: 1, max: 2}}).apply({v: 0.91})
+		).to.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'float', min: 1, max: 2}}).apply({v: 2.1})
+		).to.throw;
+	});
+
+	it('keyvals', ()=> {
+		expect(()=>
+			new Schema({v: {type: 'keyvals', min: 1, max: 3}}).apply({v: 'foo=Foo!'})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'keyvals', min: 1, max: 3}}).apply({v: ''})
+		).to.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'keyvals', min: 1, max: 3}}).apply({v: 'foo=Foo!, bar=Bar!, baz=Baz!'})
+		).to.throw;
+	});
+
+	it('mongoUri', ()=> {
+		expect(()=>
+			new Schema({v: 'mongoUri'}).apply({v: 'mongodb+srv://thing.com'})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: 'mongoUri'}).apply({v: 'https://thing.com'})
+		).to.throw;
+
+		expect(()=>
+			new Schema({v: 'mongoUri'}).apply({v: 'thing.com'})
+		).to.throw;
+
+	});
+
+	it('number', ()=> {
+		expect(()=>
+			new Schema({v: {type: 'number', min: 10, max: 100}}).apply({v: 1})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'number', min: 10, max: 100}}).apply({v: 9})
+		).to.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'number', min: 10, max: 100}}).apply({v: 101})
+		).to.throw;
+	});
+
+	it('set', ()=> {
+		expect(()=>
+			new Schema({v: {type: 'set', min: 1, max: 3}}).apply({v: 'foo,bar'})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'set', min: 1, max: 3}}).apply({v: ''})
+		).to.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'set', min: 1, max: 3}}).apply({v: ['foo, bar,baz,quz']})
+		).to.throw;
+	});
+
+	it('string', ()=> {
+		expect(()=>
+			new Schema({v: {type: 'string', min: 1, max: 3}}).apply({v: 'hi'})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'string', min: 1, max: 3}}).apply({v: ''})
+		).to.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'string', min: 1, max: 3}}).apply({v: 'hello'})
+		).to.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'string', enum: ['foo', 'bar', 'baz']}}).apply({v: 'bar'})
+		).to.not.throw;
+
+		expect(()=>
+			new Schema({v: {type: 'string', enum: ['foo', 'bar', 'baz']}}).apply({v: 'BAZ!'})
+		).to.throw;
+	});
 
 });

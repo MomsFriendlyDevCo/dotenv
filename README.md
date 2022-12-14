@@ -110,7 +110,7 @@ The following is a list of built in types which provide a handy shorthand for va
 |------------|-------------------------------------------------------------|-----------------------------------------------------|----------------------------------------------------------------|
 | `any`      | `KEY=something `                                            | Any type is valid                                   |                                                                |
 | `array`    | `KEY=foo,Bar, Baz`                                          | CSV of string values                                | `min` / `max` for array length                                 |
-| `boolean`  | `KEY=yes` / `key=true`                                      | Parse common 'truthy' strings into a boolean        |                                                                |
+| `boolean`  | `KEY=yes` / `key=true`                                      | Parse common 'truthy' strings into a boolean        |  `true=[...]`, `false=[]` (accepted strings to validate true / false |
 | `date`     | `KEY=2022-12-06` / `KEY=2022-12-06T13:20+10:00`             | Parse Date-like or ISO dates into a Date object `   | `min` / `max` for date period                                  |
 | `duration` | `KEY=2h37m`                                                 | Parse a valid timestring duration into milliseconds | `unit=ms` for the unit to parse to                             |
 | `email`    | `KEY=a@b.com` / `KEY=Simon Jones <simon@thing.com>`         | A single email in short or long form                | `name=true` to allow a long form address                       |
