@@ -72,4 +72,25 @@ describe('dotenv', ()=> {
 		}, 5500);
 	});
 
+	it.only('should export simple schemas', ()=> {
+		let config = dotenv
+			.parse('FOOBAR_FOO=Foo!\nFOOBAR_BAR=123\nBAZBAR_FOO=Foo2!\nBAZBAR_BAR=456')
+			.schema({
+				FOOBAR_FOO: {type: String, default: 'Foo'},
+				FOOBAR_BAR: Number,
+				BAZBAR_FOO: {type: String, default: 'Foo'},
+				BAZBAR_BAR: Number,
+			});
+
+		expect(config.export().split('\n')).to.deep.equal([
+			'# FOOBAR #',
+			'FOOBAR_FOO=Foo!',
+			'FOOBAR_BAR=123',
+			'',
+			'# BAZBAR #',
+			'BAZBAR_FOO=Foo2!',
+			'BAZBAR_BAR=456',
+		])
+	});
+
 });

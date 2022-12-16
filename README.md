@@ -85,7 +85,6 @@ Returns the chainable DotEnv instance.
 
 FieldSchemas are made up of any of the following properties. If a simple string or built-in type is provided instead it is assumed as the `type` subkey.
 
-```
 | Option          | Type                         | Default | Description                                                                                                                                                                                                                           |
 |-----------------|------------------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `required=true` | `Boolean`                    | `true`  | Whether the field is required                                                                                                                                                                                                         |
@@ -94,6 +93,24 @@ FieldSchemas are made up of any of the following properties. If a simple string 
 | `validate`      | `Function` / `String`        |         | Function to validate an input, must return true. If a string is given the cast function is retrieved from the type instead. Called as `(value, fieldSchema)`                                                                          |
 | `cast`          | `Function` / `String`        |         | Optional function to convert user input to a native type. If a string is given the validate is retrieved from that type instead. Called as `(value, fieldSchema)` and expected to either throw or return falsy - undefined is ignored |
 | `destruct`      | `Object` / `String` / `Date` |         | Optional destruction config. See `ConfigDestruct` for details                                                                                                                                                                         |
+
+DotEnv.export(options)
+----------------------
+Export the current config to a string.
+
+Options are:
+
+| Option          | Type       | Description                                                                        |
+|-----------------|------------|------------------------------------------------------------------------------------|
+| `header`        | `RegExp`   | How to extract section headers as a RegExp with a capture group or null to disable |
+| `headerFormat`  | `Function` | Function to format headers. Called as `(headerTitle)`                              |
+| `headerSpacing` | `Number`   | How many lines of spacing should be inserted before each (new) header              |
+| `rewritePair`   | `Function` | Function to rewrite a single `key=val` set                                         |
+
+
+DotEnv.exportFile(path, options)
+--------------------------------
+Utility function to call `.export()` and dump the contents into a file.
 
 
 DotEnv.value()
