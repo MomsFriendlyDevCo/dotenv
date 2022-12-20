@@ -72,17 +72,24 @@ describe('dotenv', ()=> {
 		}, 5500);
 	});
 
-	it.only('should export simple schemas', ()=> {
+	it('should export simple schemas', ()=> {
 		let config = dotenv
-			.parse('FOOBAR_FOO=Foo!\nFOOBAR_BAR=123\nBAZBAR_FOO=Foo2!\nBAZBAR_BAR=456')
+			.parse([
+				'FOOBAR_FOO=Foo!',
+				'FOOBAR_BAR=123',
+				'BAZBAR_FOO=Foo2!',
+				'BAZBAR_BAR=456',
+				'BAZBAR_BAZ=Y',
+			].join('\n'))
 			.schema({
-				FOOBAR_FOO: {type: String, default: 'Foo'},
+				FOOBAR_FOO: {type: String, default: 'Foo', help: 'Does a thing'},
 				FOOBAR_BAR: Number,
 				BAZBAR_FOO: {type: String, default: 'Foo'},
 				BAZBAR_BAR: Number,
+				BAZBAR_BAZ: {type: Boolean, default: false, help: 'Only "Y"/"N" accepted', true: ['Y'], false: ['N']},
 			});
 
-		expect(config.export().split('\n')).to.deep.equal([
+		expect(config.export({help: false}).split('\n')).to.deep.equal([
 			'# FOOBAR #',
 			'FOOBAR_FOO=Foo!',
 			'FOOBAR_BAR=123',
@@ -90,6 +97,18 @@ describe('dotenv', ()=> {
 			'# BAZBAR #',
 			'BAZBAR_FOO=Foo2!',
 			'BAZBAR_BAR=456',
+			'BAZBAR_BAZ=Y',
+		])
+
+		expect(config.export({values: false}).split('\n')).to.deep.equal([
+			'# FOOBAR #',
+			'FOOBAR_FOO=Foo # Does a thing',
+			'FOOBAR_BAR=',
+			'',
+			'# BAZBAR #',
+			'BAZBAR_FOO=Foo',
+			'BAZBAR_BAR=',
+			'BAZBAR_BAZ=N # Only "Y"/"N" accepted',
 		])
 	});
 
