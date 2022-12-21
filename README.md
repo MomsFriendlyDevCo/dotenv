@@ -7,6 +7,7 @@ Features:
 * All standard DotEnv parser / reader
 * Mongo like Schema support
 * Entirely synchronous - config is available immediately, no waiting on promises or fixing up race conditions
+* Easy config key rewriting via `.map(fn)` / `.camelCase()` / `.startCase()` etc. to make config compatible with other systems
 * Support for destructing config - wipe values like passwords or API-keys after a set interval
 
 
@@ -111,6 +112,47 @@ Options are:
 DotEnv.exportFile(path, options)
 --------------------------------
 Utility function to call `.export()` and dump the contents into a file.
+
+
+DotEnv.mutateKeys(alias, args)
+------------------------------
+Apply `camelCase`, `startCase` or `envCase` (with options) to all keys, returning the DotEnv instance.
+
+
+DotEnv.camelCase() / DotEnv.startCase(spacing=false) / DotEnv.envCase()
+-----------------------------------------------------------------------
+Mutate the config keys by applying a common string mutator, returning the DotEnv instance.
+
+
+DotEnv.replace(match, replacement)
+----------------------------------
+Apply a replacement to all config keys, returning the DotEnv instance.
+
+
+DotEnv.filter(match)
+------------------
+Remove all config keys that either dont have the string prefix or don't match a given RegEx, returning the DotEnv instance.
+
+
+DotEnv.trim(match)
+------------------
+Apply a replacement to all config keys removing a given String prefix / RegExp match, returning the DotEnv instance.
+
+
+DotEnv.filterAndTrim(match, replacement)
+----------------------------------------
+Apply both a filter + trim to a config keys - removing all config that doesnt match the string prefix (or RegEx) whilst also removing the given prefix (or RegExp).
+Returns the DotEnv instance.
+
+
+DotEnv.map(func)
+----------------
+Run a function on all state config keys, potencially mutating the key / value. Returns the DotEnv instance afterwards.
+
+* If the function returns a tuple array its assumed to mutate the key+val of the input config key+val combo
+* If the function returns a object, that object return (all keys) replace the state for that config key
+* If the function returns boolean `false` the key is removed completely
+* If the funciton returns boolean `true` OR undefined, no action or mutation is taken
 
 
 DotEnv.value()

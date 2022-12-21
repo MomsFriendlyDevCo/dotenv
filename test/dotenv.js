@@ -1,4 +1,4 @@
-import dotenv from '#lib/dotenv';
+import dotenv, {DotEnv} from '#lib/dotenv';
 import {expect} from 'chai';
 
 describe('dotenv', ()=> {
@@ -25,6 +25,32 @@ describe('dotenv', ()=> {
 		expect(config).to.have.property('FOO', 'Foo!');
 		expect(config).to.have.property('BAR', 123);
 	});
+
+	// FIXME
+	it.skip('should support empty values with defaults', ()=>
+		expect(dotenv
+			.schema({
+				TEST_ANY: {type: 'any', default: 'any!'},
+				TEST_ARRAY: {type: 'array', default: [1, 2, 3]},
+				TEST_BOOLEAN: {type: 'boolean', default: true},
+				TEST_DATE: {type: 'date', default: new Date('1970-01-01T00:00:00')},
+				TEST_DURATION: {type: 'duration', default: '1h'},
+				TEST_EMAIL: {type: 'email', default: 'someone@somewhere.com'},
+				TEST_EMAILS: {type: 'emails', default: 'foo@server.com, bar@server.com'},
+				TEST_FLOAT: {type: 'float', default: 3.142},
+				TEST_KEYVALS: {type: 'keyvals', default: {foo: 'Foo!', bar: 'Bar!'}},
+				TEST_MONGOURI: {type: 'mongouri', default: 'mongodb+src://server.com'},
+				TEST_NUMBER: {type: 'number', default: 2129},
+				TEST_OBJECT: {type: 'object', default: {foo: 'Foo2!', bar: 'Bar2!'}},
+				TEST_SET: {type: 'set', default: new Set(['Foo', 'Bar', 'Baz'])},
+				TEST_STRING: {type: 'string', default: 'Test!'},
+				TEST_URI: {type: 'string', default: 'https://server.com'},
+
+			})
+			.value()
+		).to.deep.equal(
+		)
+	);
 
 	it('should support destruct (on key access)', resolve => {
 		let config = dotenv
@@ -110,6 +136,115 @@ describe('dotenv', ()=> {
 			'BAZBAR_BAR=',
 			'BAZBAR_BAZ=N # Only "Y"/"N" accepted',
 		])
+	});
+
+	it.only('should support config key mangling', ()=> {
+		let configFactory = ()=> new DotEnv()
+			.parse([
+				'FOOBAR_FOO=Foo!',
+				'FOOBAR_BAR=123',
+				'BAZBAR_FOO=Foo2!',
+				'BAZBAR_BAR=456',
+				'BAZBAR_BAZ=true',
+			].join('\n'))
+			.schema({
+				FOOBAR_FOO: String,
+				FOOBAR_BAR: Number,
+				BAZBAR_FOO: String,
+				BAZBAR_BAR: Number,
+				BAZBAR_BAZ: Boolean,
+			});
+
+		expect(configFactory().value()).to.deep.equal({
+			'FOOBAR_FOO': 'Foo!',
+			'FOOBAR_BAR': 123,
+			'BAZBAR_FOO': 'Foo2!',
+			'BAZBAR_BAR': 456,
+			'BAZBAR_BAZ': true,
+		});
+
+		expect(configFactory().camelCase().value()).to.deep.equal({
+			'foobarFoo': 'Foo!',
+			'foobarBar': 123,
+			'bazbarFoo': 'Foo2!',
+			'bazbarBar': 456,
+			'bazbarBaz': true,
+		});
+
+		expect(configFactory().mutateKeys('camelCase').value()).to.deep.equal({
+			'foobarFoo': 'Foo!',
+			'foobarBar': 123,
+			'bazbarFoo': 'Foo2!',
+			'bazbarBar': 456,
+			'bazbarBaz': true,
+		});
+
+		expect(configFactory().startCase().value()).to.deep.equal({
+			'FoobarFoo': 'Foo!',
+			'FoobarBar': 123,
+			'BazbarFoo': 'Foo2!',
+			'BazbarBar': 456,
+			'BazbarBaz': true,
+		});
+
+		expect(configFactory().startCase(true).value()).to.deep.equal({
+			'Foobar Foo': 'Foo!',
+			'Foobar Bar': 123,
+			'Bazbar Foo': 'Foo2!',
+			'Bazbar Bar': 456,
+			'Bazbar Baz': true,
+		});
+
+		expect(configFactory().mutateKeys('startCase', true).value()).to.deep.equal({
+			'Foobar Foo': 'Foo!',
+			'Foobar Bar': 123,
+			'Bazbar Foo': 'Foo2!',
+			'Bazbar Bar': 456,
+			'Bazbar Baz': true,
+		});
+
+		expect(configFactory().envCase().value()).to.deep.equal({
+			'FOOBAR_FOO': 'Foo!',
+			'FOOBAR_BAR': 123,
+			'BAZBAR_FOO': 'Foo2!',
+			'BAZBAR_BAR': 456,
+			'BAZBAR_BAZ': true,
+		});
+
+		expect(configFactory().filter('FOOBAR_').value()).to.deep.equal({
+			'FOOBAR_FOO': 'Foo!',
+			'FOOBAR_BAR': 123,
+		});
+
+		expect(configFactory().filter('FOOBAR_').trim('FOOBAR_').value()).to.deep.equal({
+			'FOO': 'Foo!',
+			'BAR': 123,
+		});
+
+		expect(configFactory().filterAndTrim('FOOBAR_').value()).to.deep.equal({
+			'FOO': 'Foo!',
+			'BAR': 123,
+		});
+
+		expect(configFactory().filter(/^FOOBAR_/).value()).to.deep.equal({
+			'FOOBAR_FOO': 'Foo!',
+			'FOOBAR_BAR': 123,
+		});
+
+		expect(configFactory().filter(/^FOOBAR_/).trim('FOOBAR_').value()).to.deep.equal({
+			'FOO': 'Foo!',
+			'BAR': 123,
+		});
+
+		expect(configFactory().filterAndTrim(/^FOOBAR_/).value()).to.deep.equal({
+			'FOO': 'Foo!',
+			'BAR': 123,
+		});
+
+		expect(configFactory().filterAndTrim(/^FOOBAR_/).camelCase().value()).to.deep.equal({
+			foo: 'Foo!',
+			bar: 123,
+		});
 	});
 
 });
