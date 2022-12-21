@@ -26,8 +26,7 @@ describe('dotenv', ()=> {
 		expect(config).to.have.property('BAR', 123);
 	});
 
-	// FIXME
-	it.skip('should support empty values with defaults', ()=>
+	it('should support empty values with defaults', ()=>
 		expect(dotenv
 			.schema({
 				TEST_ANY: {type: 'any', default: 'any!'},
@@ -39,17 +38,31 @@ describe('dotenv', ()=> {
 				TEST_EMAILS: {type: 'emails', default: 'foo@server.com, bar@server.com'},
 				TEST_FLOAT: {type: 'float', default: 3.142},
 				TEST_KEYVALS: {type: 'keyvals', default: {foo: 'Foo!', bar: 'Bar!'}},
-				TEST_MONGOURI: {type: 'mongouri', default: 'mongodb+src://server.com'},
+				TEST_MONGOURI: {type: 'mongouri', default: 'mongodb+srv://server.com'},
 				TEST_NUMBER: {type: 'number', default: 2129},
 				TEST_OBJECT: {type: 'object', default: {foo: 'Foo2!', bar: 'Bar2!'}},
 				TEST_SET: {type: 'set', default: new Set(['Foo', 'Bar', 'Baz'])},
 				TEST_STRING: {type: 'string', default: 'Test!'},
 				TEST_URI: {type: 'string', default: 'https://server.com'},
-
 			})
 			.value()
-		).to.deep.equal(
-		)
+		).to.deep.equal({
+				TEST_ANY: 'any!',
+				TEST_ARRAY: [1, 2, 3],
+				TEST_BOOLEAN: true,
+				TEST_DATE: new Date('1970-01-01T00:00:00'),
+				TEST_DURATION: 60 * 60 * 1000,
+				TEST_EMAIL: 'someone@somewhere.com',
+				TEST_EMAILS: 'foo@server.com, bar@server.com',
+				TEST_FLOAT: 3.142,
+				TEST_KEYVALS: {foo: 'Foo!', bar: 'Bar!'},
+				TEST_MONGOURI: 'mongodb+srv://server.com',
+				TEST_NUMBER: 2129,
+				TEST_OBJECT: {foo: 'Foo2!', bar: 'Bar2!'},
+				TEST_SET: new Set(['Foo', 'Bar', 'Baz']),
+				TEST_STRING: 'Test!',
+				TEST_URI: 'https://server.com',
+		})
 	);
 
 	it('should support destruct (on key access)', resolve => {
@@ -138,7 +151,7 @@ describe('dotenv', ()=> {
 		])
 	});
 
-	it.only('should support config key mangling', ()=> {
+	it('should support config key mangling', ()=> {
 		let configFactory = ()=> new DotEnv()
 			.parse([
 				'FOOBAR_FOO=Foo!',
