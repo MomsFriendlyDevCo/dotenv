@@ -91,7 +91,7 @@ describe('dotenv', ()=> {
 	it('should support destruct (automatically on timeout)', function(resolve) {
 		this.timeout(10 * 1000);
 
-		let config = dotenv
+		let config = new DotEnv()
 			.parse('SECRET=Yep')
 			.schema({
 				SECRET: {type: 'string', destruct: {at: '5s', destructValue: 'NOPE!'}},
