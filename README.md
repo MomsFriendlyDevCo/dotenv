@@ -95,6 +95,11 @@ FieldSchemas are made up of any of the following properties. If a simple string 
 | `cast`          | `Function` / `String`        |         | Optional function to convert user input to a native type. If a string is given the validate is retrieved from that type instead. Called as `(value, fieldSchema)` and expected to either throw or return falsy - undefined is ignored |
 | `destruct`      | `Object` / `String` / `Date` |         | Optional destruction config. See `ConfigDestruct` for details                                                                                                                                                                         |
 
+DotEnv.schemaGlob(glob, schema)
+-------------------------------
+Apply a schema to all config keys matching a glob, array of globs or a RegExp.
+
+
 DotEnv.export(options)
 ----------------------
 Export the current config to a string.

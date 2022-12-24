@@ -151,6 +151,29 @@ describe('dotenv', ()=> {
 		])
 	});
 
+	it('should support schemaGlobs', ()=> {
+		expect(new DotEnv()
+			.parse([
+				'FOO=Foo!',
+				'BAR=123',
+				'BAZ=456',
+				'QUZ=false',
+				'FLARP=1',
+			].join('\n'))
+			.schemaGlob('FOO', String)
+			.schemaGlob('B*', {type: Number})
+			.schemaGlob('Q?Z', {type: 'boolean'})
+			.schemaGlob('FLARP', 'boolean')
+			.value()
+		).to.deep.equal({
+			FOO: 'Foo!',
+			BAR: 123,
+			BAZ: 456,
+			QUZ: false,
+			FLARP: true,
+		})
+	});
+
 	it('should support config key mangling', ()=> {
 		let configFactory = ()=> new DotEnv()
 			.parse([
