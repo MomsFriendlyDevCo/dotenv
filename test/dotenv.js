@@ -260,4 +260,74 @@ describe('dotenv', ()=> {
 		});
 	});
 
+	it('should support splitting flag config into a tree', ()=> {
+		let configFactory = ()=> new DotEnv()
+			.parse([
+				'FOO_BAR_FOO=Foo!',
+				'FOO_BAR_BAR=123',
+				'BAR_BAR_FOO=Foo2!',
+				'BAR_BAR_BAR=456',
+			].join('\n'))
+			.schema({
+				FOO_BAR_FOO: String,
+				FOO_BAR_BAR: Number,
+				FOO_BAR_BAZ: {type: Boolean, default: true},
+				BAR_BAR_FOO: String,
+				BAR_BAR_BAR: Number,
+				BAR_BAR_BAZ: {type: Boolean, default: false},
+			});
+
+		let idealTree = {
+			FOO: {
+				BAR: {
+					FOO: 'Foo!',
+					BAR: 123,
+					BAZ: true,
+				},
+			},
+			BAR: {
+				BAR: {
+					FOO: 'Foo2!',
+					BAR: 456,
+					BAZ: false,
+				},
+			},
+		};
+
+
+		expect(configFactory().toTree({branches: /^(.+)_(.+)_(.+)/}).value())
+			.to.deep.equal(idealTree);
+
+		expect(configFactory().toTree(/^(.+)_(.+)_(.+)/).value())
+			.to.deep.equal(idealTree);
+
+		expect(configFactory().toTree({splitter: /_+/}).value())
+			.to.deep.equal(idealTree);
+
+		expect(configFactory().toTree(/_+/).value())
+			.to.deep.equal(idealTree);
+
+		// Camel case + split into tree
+		expect(configFactory().camelCase().toTree({
+			splitter: /(?=[A-Z])/,
+			rewrite: v => v.toLowerCase(),
+		}).value())
+			.to.deep.equal({
+				foo: {
+					bar: {
+						foo: 'Foo!',
+						bar: 123,
+						baz: true,
+					},
+				},
+				bar: {
+					bar: {
+						foo: 'Foo2!',
+						bar: 456,
+						baz: false,
+					},
+				},
+			});
+	});
+
 });

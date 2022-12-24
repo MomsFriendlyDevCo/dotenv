@@ -155,6 +155,52 @@ Run a function on all state config keys, potencially mutating the key / value. R
 * If the funciton returns boolean `true` OR undefined, no action or mutation is taken
 
 
+DotEnv.toTree(options)
+----------------------
+Transform a flat key/val config item a hierarchical object-of-objects based on rules.
+
+```javascript
+let result = new DotEnv()
+    .parse([
+        'FOO_BAR_FOO=Foo!',
+        'FOO_BAR_BAR=123',
+        'FOO_BAR_BAZ=true',
+        'BAR_BAR_FOO=Foo2!',
+        'BAR_BAR_BAR=456',
+        'BAR_BAR_BAZ=false',
+    ].join('\n'))
+    .toTree(/_/)
+    .value()
+
+/**
+// Will return
+{
+    FOO: {
+        BAR: {
+            FOO: 'Foo!',
+            BAR: '123',
+            BAZ: 'true',
+        },
+    },
+    BAR: {
+        BAR: {
+            FOO: 'Foo2!',
+            BAR: '456',
+            BAZ: 'false',
+        },
+    },
+}
+```
+
+Options are:
+
+| Option     | Type                  | Description                                                                  |
+|------------|-----------------------|------------------------------------------------------------------------------|
+| `branches` | `Function`            | A RegExp where each capture group denotes a branch of a tree                 |
+| `splitter` | `Function`            | A RegExp to split keys by a given string                                     |
+| `rewrite`  | `Function` / `RegExp` | Run a given funciton (or replacement RegExp) over each extracted key segment |
+
+
 DotEnv.value()
 --------------
 Return the final, computed config object.
