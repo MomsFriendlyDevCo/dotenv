@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import dotenv, {DotEnv} from '#lib/dotenv';
 import {expect} from 'chai';
 
@@ -44,6 +45,7 @@ describe('dotenv', ()=> {
 				TEST_REGEXP: {type: 'regexp', default: /a(.)c/i},
 				TEST_SET: {type: 'set', default: new Set(['Foo', 'Bar', 'Baz'])},
 				TEST_STRING: {type: 'string', default: 'Test!'},
+				TEST_STYLE: {type: 'style', default: 'bold+red'},
 				TEST_URI: {type: 'string', default: 'https://server.com'},
 			})
 			.value()
@@ -60,9 +62,10 @@ describe('dotenv', ()=> {
 				TEST_MONGOURI: 'mongodb+srv://server.com',
 				TEST_NUMBER: 2129,
 				TEST_OBJECT: {foo: 'Foo2!', bar: 'Bar2!'},
-				TEST_REGEP: new RegExp(/a(.)c/i),
+				TEST_REGEXP: new RegExp(/a(.)c/i),
 				TEST_SET: new Set(['Foo', 'Bar', 'Baz']),
 				TEST_STRING: 'Test!',
+				TEST_STYLE: chalk.bold.red,
 				TEST_URI: 'https://server.com',
 		})
 	);
@@ -285,7 +288,7 @@ describe('dotenv', ()=> {
 		});
 	});
 
-	it.only('should support splitting flag config into a tree', ()=> {
+	it('should support splitting flag config into a tree', ()=> {
 		let configFactory = ()=> new DotEnv()
 			.parse([
 				'FOO_BAR_FOO=Foo!',
@@ -337,6 +340,42 @@ describe('dotenv', ()=> {
 			splitter: /(?=[A-Z])/,
 			rewrite: v => v.toLowerCase(),
 		}).value())
+			.to.deep.equal({
+				foo: {
+					bar: {
+						foo: 'Foo!',
+						bar: 123,
+						baz: true,
+					},
+				},
+				bar: {
+					bar: {
+						foo: 'Foo2!',
+						bar: 456,
+						baz: false,
+					},
+				},
+			});
+
+		expect(configFactory().toTree(/_+/).deep(false).camelCase().value())
+			.to.deep.equal({
+				foo: {
+					BAR: {
+						FOO: 'Foo!',
+						BAR: 123,
+						BAZ: true,
+					},
+				},
+				bar: {
+					BAR: {
+						FOO: 'Foo2!',
+						BAR: 456,
+						BAZ: false,
+					},
+				},
+			});
+
+		expect(configFactory().toTree(/_+/).deep().camelCase().value())
 			.to.deep.equal({
 				foo: {
 					bar: {
