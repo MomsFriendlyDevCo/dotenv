@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import moment from 'moment';
-import {Schema} from '#lib/schema';
+import {Schema} from '#lib/Schema';
 import chai, {expect} from 'chai';
 
 chai.config.truncateThreshold = 999;
