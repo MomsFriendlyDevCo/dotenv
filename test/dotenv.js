@@ -41,6 +41,7 @@ describe('dotenv', ()=> {
 				TEST_MONGOURI: {type: 'mongouri', default: 'mongodb+srv://server.com'},
 				TEST_NUMBER: {type: 'number', default: 2129},
 				TEST_OBJECT: {type: 'object', default: {foo: 'Foo2!', bar: 'Bar2!'}},
+				TEST_REGEXP: {type: 'regexp', default: /a(.)c/i},
 				TEST_SET: {type: 'set', default: new Set(['Foo', 'Bar', 'Baz'])},
 				TEST_STRING: {type: 'string', default: 'Test!'},
 				TEST_URI: {type: 'string', default: 'https://server.com'},
@@ -59,6 +60,7 @@ describe('dotenv', ()=> {
 				TEST_MONGOURI: 'mongodb+srv://server.com',
 				TEST_NUMBER: 2129,
 				TEST_OBJECT: {foo: 'Foo2!', bar: 'Bar2!'},
+				TEST_REGEP: new RegExp(/a(.)c/i),
 				TEST_SET: new Set(['Foo', 'Bar', 'Baz']),
 				TEST_STRING: 'Test!',
 				TEST_URI: 'https://server.com',
@@ -283,7 +285,7 @@ describe('dotenv', ()=> {
 		});
 	});
 
-	it('should support splitting flag config into a tree', ()=> {
+	it.only('should support splitting flag config into a tree', ()=> {
 		let configFactory = ()=> new DotEnv()
 			.parse([
 				'FOO_BAR_FOO=Foo!',
