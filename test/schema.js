@@ -321,6 +321,20 @@ describe('dotenv.Schema (validation)', ()=> {
 		).to.throw();
 	});
 
+	it('regexp', ()=> {
+		expect(()=>
+			new Schema({v: {type: 'regexp'}}).apply({v: '/$a(.)c$/i'})
+		).to.not.throw();
+
+		let result = new Schema({v: {type: 'regexp'}}).apply({v: '/$a(.)c$/i'});
+		expect(result.v).to.be.an.instanceOf(RegExp);
+		expect(result.v.toString()).to.be.deep.equal('/$a(.)c$/i');
+
+		result = new Schema({v: {type: 'regexp', flags: 'i', surrounds: false}}).apply({v: '$a(.)c$'});
+		expect(result.v).to.be.an.instanceOf(RegExp);
+		expect(result.v.toString()).to.be.deep.equal('/$a(.)c$/i');
+	});
+
 	it('string', ()=> {
 		expect(()=>
 			new Schema({v: {type: 'string', min: 1, max: 3}}).apply({v: 'hi'})
