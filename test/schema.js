@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import moment from 'moment';
 import {Schema} from '#lib/schema';
 import chai, {expect} from 'chai';
@@ -355,6 +356,19 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(()=>
 			new Schema({v: {type: 'string', enum: ['foo', 'bar', 'baz']}}).apply({v: 'BAZ!'})
 		).to.throw();
+	});
+
+	it('style', ()=> {
+		process.env.FORCE_COLOR = 3; // Force Chalk to be enabled
+		expect(()=>
+			new Schema({v: 'style'}).apply({v: 'bold red'})
+		).to.not.throw();
+
+		expect(new Schema({v: 'style'}).apply({v: 'red'}))
+			.to.be.deep.equal({v: chalk.red});
+
+		expect(new Schema({v: 'style'}).apply({v: 'bgWhite+fgBlack'})) // NOTE: These have to be in bg+fg order to keep Mocha's deep.equal happy
+			.to.be.deep.equal({v: chalk.bgWhite.black});
 	});
 
 });
