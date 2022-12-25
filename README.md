@@ -119,6 +119,13 @@ DotEnv.exportFile(path, options)
 Utility function to call `.export()` and dump the contents into a file.
 
 
+DotEnv.deep(value)
+------------------
+Indicates that key mutation functions (see below) should operate on nested objects.
+Set to any falsy value to revert to only applying mutations to top level keys only.
+Returns the DotEnv instance.
+
+
 DotEnv.mutateKeys(alias, args)
 ------------------------------
 Apply `camelCase`, `startCase` or `envCase` (with options) to all keys, returning the DotEnv instance.
