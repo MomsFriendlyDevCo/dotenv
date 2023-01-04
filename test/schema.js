@@ -1,7 +1,8 @@
+import chai, {expect} from 'chai';
 import chalk from 'chalk';
+import {DotEnv} from '#lib/dotenv';
 import moment from 'moment';
 import {Schema} from '#lib/Schema';
-import chai, {expect} from 'chai';
 
 chai.config.truncateThreshold = 999;
 
@@ -278,6 +279,36 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(()=>
 			new Schema({v: {type: 'keyvals', min: 1, max: 3}}).apply({v: 'foo=Foo!, bar=Bar!, baz=Baz!, quz:Quz!'})
 		).to.throw();
+
+		expect(
+			new DotEnv().parse('KEYVALS=foo: 1, bar: 2, baz: 3').schema({KEYVALS: 'keyvals'}).value()
+		).to.deep.equal({
+			KEYVALS: {
+				foo: '1',
+				bar: '2',
+				baz: '3',
+			},
+		});
+
+		expect(
+			new DotEnv().parse('KEYVALS=foo, bar, baz').schema({KEYVALS: {type: 'keyvals', noValue: ''}}).value()
+		).to.deep.equal({
+			KEYVALS: {
+				foo: '',
+				bar: '',
+				baz: '',
+			},
+		});
+
+		expect(
+			new DotEnv().parse('KEYVALS=foo, bar, baz').schema({KEYVALS: {type: 'keyvals', noValue: {}}}).value()
+		).to.deep.equal({
+			KEYVALS: {
+				foo: {},
+				bar: {},
+				baz: {},
+			},
+		});
 	});
 
 	it('mongoUri', ()=> {
