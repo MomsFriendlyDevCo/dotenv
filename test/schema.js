@@ -281,6 +281,12 @@ describe('dotenv.Schema (validation)', ()=> {
 		).to.throw();
 
 		expect(
+			new DotEnv().parse('KEYVALS=').schema({KEYVALS: {type: 'keyvals', required: false, default: ''}}).value()
+		).to.deep.equal({
+			KEYVALS: {},
+		});
+
+		expect(
 			new DotEnv().parse('KEYVALS=foo: 1, bar: 2, baz: 3').schema({KEYVALS: 'keyvals'}).value()
 		).to.deep.equal({
 			KEYVALS: {
