@@ -157,6 +157,13 @@ Apply both a filter + trim to a config keys - removing all config that doesnt ma
 Returns the DotEnv instance.
 
 
+DotEnv.template(context)
+------------------------
+Applies a JavaScript string template (via [@MomsFriendlyDevCo/Template](https://github.com/MomsFriendlyDevCo/template)) to all values with the given context.
+If no context is provided the current state is used.
+Returns the DotEnv instance.
+
+
 DotEnv.map(func)
 ----------------
 Run a function on all state config keys, potencially mutating the key / value. Returns the DotEnv instance afterwards.

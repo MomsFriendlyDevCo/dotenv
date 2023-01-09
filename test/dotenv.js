@@ -70,6 +70,49 @@ describe('dotenv', ()=> {
 		})
 	);
 
+	it('should support templates', ()=> {
+		expect(new DotEnv()
+			.parse([
+				'FOO=Foo!',
+				'BAR=Bar!',
+				'FOOBAR=${FOO}-${BAR}',
+			].join('\n'))
+			.schema({
+				FOO: String,
+				BAR: String,
+				FOOBAR: String,
+			})
+			.template()
+			.value()
+		).to.be.deep.equal({
+			FOO: 'Foo!',
+			BAR: 'Bar!',
+			FOOBAR: 'Foo!-Bar!',
+		});
+
+		expect(new DotEnv()
+			.parse([
+				'FOO=Foo!',
+				'BAR=Bar!',
+				'FOOBAR=${FOO}-${BAR}',
+			].join('\n'))
+			.schema({
+				FOO: String,
+				BAR: String,
+				FOOBAR: String,
+			})
+			.template({
+				FOO: 'FOO!',
+				BAR: 'BAR!',
+			})
+			.value()
+		).to.be.deep.equal({
+			FOO: 'Foo!',
+			BAR: 'Bar!',
+			FOOBAR: 'FOO!-BAR!',
+		});
+	});
+
 	it('should support destruct (on key access)', resolve => {
 		let config = dotenv
 			.parse('PASS=hello-world')
