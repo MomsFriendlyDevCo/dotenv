@@ -3,6 +3,7 @@ import chalk from 'chalk';
 import {DotEnv} from '#lib/dotenv';
 import moment from 'moment';
 import {Schema} from '#lib/Schema';
+import {URL} from 'node:url';
 
 chai.config.truncateThreshold = 999;
 
@@ -406,6 +407,25 @@ describe('dotenv.Schema (validation)', ()=> {
 
 		expect(new Schema({v: 'style'}).apply({v: 'bgWhite+fgBlack'})) // NOTE: These have to be in bg+fg order to keep Mocha's deep.equal happy
 			.to.be.deep.equal({v: chalk.bgWhite.black});
+	});
+
+	it('uri', ()=> {
+		expect(()=>
+			new Schema({v: 'uri'}).apply({v: 'https://google.com.au'})
+		).to.not.throw();
+
+		expect(new Schema({v: 'style'}).apply({v: 'red'}))
+			.to.be.deep.equal({v: chalk.red});
+
+		expect(new Schema({v: 'uri'}).apply({v: 'https://google.com.au'}))
+			.to.be.deep.equal({v: 'https://google.com.au'});
+
+		let config = new Schema({v: {type: 'uri', parse: true}}).apply({v: 'https://google.com.au/dir'});
+		expect(config).to.be.an('object');
+		expect(config.v).to.be.an.instanceOf(URL);
+		expect(config.v).to.have.property('protocol', 'https:');
+		expect(config.v).to.have.property('host', 'google.com.au');
+		expect(config.v).to.have.property('pathname', '/dir');
 	});
 
 });
