@@ -174,9 +174,25 @@ Run a function on all state config keys, potencially mutating the key / value. R
 * If the funciton returns boolean `true` OR undefined, no action or mutation is taken
 
 
+DotEnv.tap(fn)
+--------------
+Run an arbitrary function passing in this DotEnv instance as the first argument and context.
+Returns the chainable DotEnv instance.
+
+```javascript
+new DotEnv()
+    .parse(...)
+    .tap(dotEnv => console.log('Raw config:', dotEnv.value())
+    .toTree(/_/)
+    .tap(dotEnv => console.log('Config as a tree:', dotEnv.value())
+    .value()
+```
+
+
 DotEnv.toTree(options)
 ----------------------
 Transform a flat key/val config item a hierarchical object-of-objects based on rules.
+Returns the chainable DotEnv instance.
 
 ```javascript
 let result = new DotEnv()
