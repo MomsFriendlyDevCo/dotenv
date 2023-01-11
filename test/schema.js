@@ -128,6 +128,12 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(()=>
 			new Schema({v: {type: 'array', subType: 'string'}}).apply({v: 'foo,bar,baz,quz'})
 		).to.not.throw();
+
+		expect(
+			new DotEnv().parse('ARR=').schema({ARR: {type: 'array', required: false, default: ''}}).value()
+		).to.deep.equal({
+			ARR: [],
+		});
 	});
 
 	it('boolean', ()=> {
