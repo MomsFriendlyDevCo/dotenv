@@ -352,6 +352,29 @@ describe('dotenv.Schema (validation)', ()=> {
 		).to.throw();
 	});
 
+	it('percent', ()=> {
+		expect(()=>
+			new Schema({v: {type: 'percent', min: 10, max: 100}}).apply({v: '11%'})
+		).to.not.throw();
+
+		expect(()=>
+			new Schema({v: {type: 'percent', min: 10, max: 100}}).apply({v: '9%'})
+		).to.throw();
+
+		expect(()=>
+			new Schema({v: {type: 'percent', min: 10, max: 100}}).apply({v: '101%'})
+		).to.throw();
+
+		expect(
+			new Schema({v: {type: 'percent', min: 10, max: 100}}).apply({v: '10%'})
+		).to.be.deep.equal({v: 10})
+
+		expect(
+			new Schema({v: {type: 'percent', min: 10, max: 100}}).apply({v: '10'})
+		).to.be.deep.equal({v: 10})
+	});
+
+
 	it('set', ()=> {
 		expect(()=>
 			new Schema({v: {type: 'set', min: 1, max: 3}}).apply({v: 'foo,bar'})
