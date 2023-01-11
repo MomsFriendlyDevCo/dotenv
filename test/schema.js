@@ -130,6 +130,12 @@ describe('dotenv.Schema (validation)', ()=> {
 		).to.not.throw();
 
 		expect(
+			new Schema({v: {type: 'array', subType: 'string', split: 'whitespace'}}).apply({v: 'foo bar baz quz'})
+		).to.deep.equal({
+			v: ['foo', 'bar', 'baz', 'quz'],
+		});
+
+		expect(
 			new DotEnv().parse('ARR=').schema({ARR: {type: 'array', required: false, default: ''}}).value()
 		).to.deep.equal({
 			ARR: [],
