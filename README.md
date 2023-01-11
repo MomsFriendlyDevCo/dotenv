@@ -236,11 +236,15 @@ let result = new DotEnv()
 
 Options are:
 
-| Option     | Type                  | Description                                                                  |
-|------------|-----------------------|------------------------------------------------------------------------------|
-| `branches` | `Function`            | A RegExp where each capture group denotes a branch of a tree                 |
-| `splitter` | `Function`            | A RegExp to split keys by a given string                                     |
-| `rewrite`  | `Function` / `RegExp` | Run a given funciton (or replacement RegExp) over each extracted key segment |
+| Option        | Type                       | Default    | Description                                                                                 |
+|---------------|----------------------------|------------|---------------------------------------------------------------------------------------------|
+| `branches`    | `Function`                 |            | A RegExp where each capture group denotes a branch of a tree                                |
+| `splitter`    | `Function`                 |            | A RegExp to split keys by a given string                                                    |
+| `rewrite`     | `Function` / `RegExp`      |            | Run a given funciton (or replacement RegExp) over each extracted key segment                |
+| `matching`    | `String`                   | `'remove'` | Operation to perform on matching keys. ENUM: `'keep'`, `'remove'`     |
+| `nonMatching` | `String`                   | `'remove'` | Operation to perform on non-matching keys (branching method only). ENUM: `'keep'`, `'remove'` |
+| `prefix`      | `String` / `Array<String>` | `''`       | Optional path segment prefix when setting keys                                              |
+| `clear`       | `Boolean`                  | `false`    | Start with a blank tree, if falsey will instead muatete the existing state                  |
 
 
 DotEnv.value()

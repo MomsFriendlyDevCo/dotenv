@@ -331,7 +331,7 @@ describe('dotenv', ()=> {
 		});
 	});
 
-	it('should support splitting flag config into a tree', ()=> {
+	it('should support splitting config into a tree', ()=> {
 		let configFactory = ()=> new DotEnv()
 			.parse([
 				'FOO_BAR_FOO=Foo!',
