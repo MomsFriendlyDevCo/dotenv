@@ -198,6 +198,12 @@ new DotEnv()
 Note that if you intend to copy the state inside `tap()` it is advisable to use `.value({clone: true})` as functions such as `.toTree()` mutate sub-keys which can change state.
 
 
+DotEnv.thru(fn)
+---------------
+Like `DotEnv.tap(fn)` only the return value is used as the new state.
+Returns the chainable DotEnv instance.
+
+
 DotEnv.toTree(options)
 ----------------------
 Transform a flat key/val config item a hierarchical object-of-objects based on rules.
