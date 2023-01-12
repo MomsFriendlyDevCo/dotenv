@@ -397,16 +397,24 @@ describe('dotenv.Schema (validation)', ()=> {
 
 	it('regexp', ()=> {
 		expect(()=>
-			new Schema({v: {type: 'regexp'}}).apply({v: '/$a(.)c$/i'})
+			new Schema({v: {type: 'regexp'}}).apply({v: '/^a(.)c$/i'})
 		).to.not.throw();
 
-		let result = new Schema({v: {type: 'regexp'}}).apply({v: '/$a(.)c$/i'});
+		let result = new Schema({v: {type: 'regexp'}}).apply({v: '/^a(.)c$/i'});
 		expect(result.v).to.be.an.instanceOf(RegExp);
-		expect(result.v.toString()).to.be.deep.equal('/$a(.)c$/i');
+		expect(result.v.toString()).to.be.deep.equal('/^a(.)c$/i');
 
-		result = new Schema({v: {type: 'regexp', flags: 'i', surrounds: false}}).apply({v: '$a(.)c$'});
+		result = new Schema({v: {type: 'regexp', flags: 'i', surrounds: false}}).apply({v: '^a(.)c$'});
 		expect(result.v).to.be.an.instanceOf(RegExp);
-		expect(result.v.toString()).to.be.deep.equal('/$a(.)c$/i');
+		expect(result.v.toString()).to.be.deep.equal('/^a(.)c$/i');
+
+		result = new Schema({v: {type: 'regexp', flags: 'i', acceptPlain: true}}).apply({v: 'foo'});
+		expect(result.v).to.be.an.instanceOf(RegExp);
+		expect(result.v.toString()).to.be.deep.equal('/foo/i');
+
+		result = new Schema({v: {type: 'regexp', acceptPlain: true, plainPrefix: '^', plainSuffix: '$'}}).apply({v: 'foo'});
+		expect(result.v).to.be.an.instanceOf(RegExp);
+		expect(result.v.toString()).to.be.deep.equal('/^foo$/');
 	});
 
 	it('string', ()=> {
