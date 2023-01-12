@@ -336,6 +336,7 @@ describe('dotenv', ()=> {
 			.parse([
 				'FOO_BAR_FOO=Foo!',
 				'FOO_BAR_BAR=123',
+				'FOO_BAR_QUZ=Foo, Bar,Baz',
 				'BAR_BAR_FOO=Foo2!',
 				'BAR_BAR_BAR=456',
 			].join('\n'))
@@ -343,6 +344,7 @@ describe('dotenv', ()=> {
 				FOO_BAR_FOO: String,
 				FOO_BAR_BAR: Number,
 				FOO_BAR_BAZ: {type: Boolean, default: true},
+				FOO_BAR_QUZ: {type: Array},
 				BAR_BAR_FOO: String,
 				BAR_BAR_BAR: Number,
 				BAR_BAR_BAZ: {type: Boolean, default: false},
@@ -354,6 +356,7 @@ describe('dotenv', ()=> {
 					FOO: 'Foo!',
 					BAR: 123,
 					BAZ: true,
+					QUZ: ['Foo', 'Bar', 'Baz'],
 				},
 			},
 			BAR: {
@@ -389,6 +392,7 @@ describe('dotenv', ()=> {
 						foo: 'Foo!',
 						bar: 123,
 						baz: true,
+						quz: ['Foo', 'Bar', 'Baz'],
 					},
 				},
 				bar: {
@@ -407,6 +411,7 @@ describe('dotenv', ()=> {
 						FOO: 'Foo!',
 						BAR: 123,
 						BAZ: true,
+						QUZ: ['Foo', 'Bar', 'Baz'],
 					},
 				},
 				bar: {
@@ -425,6 +430,7 @@ describe('dotenv', ()=> {
 						foo: 'Foo!',
 						bar: 123,
 						baz: true,
+						quz: ['Foo', 'Bar', 'Baz'],
 					},
 				},
 				bar: {
