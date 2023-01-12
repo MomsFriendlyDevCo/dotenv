@@ -195,6 +195,8 @@ new DotEnv()
     .value()
 ```
 
+Note that if you intend to copy the state inside `tap()` it is advisable to use `.value({clone: true})` as functions such as `.toTree()` mutate sub-keys which can change state.
+
 
 DotEnv.toTree(options)
 ----------------------
@@ -247,9 +249,16 @@ Options are:
 | `clear`       | `Boolean`                  | `false`    | Start with a blank tree, if falsey will instead muatete the existing state                  |
 
 
-DotEnv.value()
---------------
+DotEnv.value(options)
+---------------------
 Return the final, computed config object.
+
+
+Options are:
+
+| Option  | Type      | Default | Description                                                                   |
+|---------|-----------|---------|-------------------------------------------------------------------------------|
+| `clone` | `Boolean` | `false` | Return a deep clone of the value - this prevents future mangling via toTree() |
 
 
 Built in types
