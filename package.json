@@ -6,6 +6,10 @@
     "lint": "eslint lib",
     "test": "mocha"
   },
+  "keywords": [
+    "dotenv",
+    "env"
+  ],
   "type": "module",
   "imports": {
     "#lib/*": "./lib/*.js"
@@ -20,6 +24,7 @@
     "url": "git+https://github.com/MomsFriendlyDevCo/dotenv.git"
   },
   "author": "Matt Carter <matt@mfdc.biz>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/MomsFriendlyDevCo/dotenv/issues"
   },

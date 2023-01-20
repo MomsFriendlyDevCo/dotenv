@@ -136,9 +136,21 @@ describe('dotenv.Schema (validation)', ()=> {
 		});
 
 		expect(
+			new DotEnv().parse('ARR=').schema({ARR: {type: 'array', required: false}}).value()
+		).to.deep.equal({
+			ARR: undefined,
+		});
+
+		expect(
 			new DotEnv().parse('ARR=').schema({ARR: {type: 'array', required: false, default: ''}}).value()
 		).to.deep.equal({
-			ARR: [],
+			ARR: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('ARR=').schema({ARR: {type: 'array', required: false, default: 'foo,bar, baz'}}).value()
+		).to.deep.equal({
+			ARR: ['foo', 'bar', 'baz'],
 		});
 	});
 
@@ -174,6 +186,24 @@ describe('dotenv.Schema (validation)', ()=> {
 				a: 'true',
 			})
 		).to.throw();
+
+		expect(
+			new DotEnv().parse('BOOL=').schema({BOOL: {type: 'boolean', required: false}}).value()
+		).to.deep.equal({
+			BOOL: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('BOOL=').schema({BOOL: {type: 'boolean', default: true}}).value()
+		).to.deep.equal({
+			BOOL: true,
+		});
+
+		expect(
+			new DotEnv().parse('BOOL=').schema({BOOL: {type: 'boolean', default: false}}).value()
+		).to.deep.equal({
+			BOOL: false,
+		});
 	});
 
 	it('date', ()=> {
@@ -200,6 +230,18 @@ describe('dotenv.Schema (validation)', ()=> {
 				max: moment().add(1, 'd').toDate(),
 			}}).apply({v: moment().add(1, 'w').toDate()})
 		).to.throw();
+
+		expect(
+			new DotEnv().parse('DATE=').schema({DATE: {type: 'date', required: false}}).value()
+		).to.deep.equal({
+			DATE: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('DATE=').schema({DATE: {type: 'date', default: new Date('2022-01-01T00:00:00Z')}}).value()
+		).to.deep.equal({
+			DATE: new Date('2022-01-01T00:00:00Z'),
+		});
 	});
 
 	it('duration', ()=> {
@@ -216,6 +258,18 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(()=>
 			new Schema({v: 'duration'}).apply({v: ''})
 		).to.throw();
+
+		expect(
+			new DotEnv().parse('DURATION=').schema({DURATION: {type: 'duration', required: false}}).value()
+		).to.deep.equal({
+			DURATION: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('DURATION=').schema({DURATION: {type: 'duration', default: '10m'}}).value()
+		).to.deep.equal({
+			DURATION: 60 * 1000 * 10,
+		});
 	});
 
 	it('email', ()=> {
@@ -230,6 +284,18 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(()=>
 			new Schema({v: 'email'}).apply({v: 'http://someone.com'})
 		).to.throw();
+
+		expect(
+			new DotEnv().parse('EMAIL=').schema({EMAIL: {type: 'email', required: false}}).value()
+		).to.deep.equal({
+			EMAIL: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('EMAIL=').schema({EMAIL: {type: 'email', default: 'nope@nope.com'}}).value()
+		).to.deep.equal({
+			EMAIL: 'nope@nope.com',
+		});
 	});
 
 	it('emails', ()=> {
@@ -252,6 +318,18 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(()=>
 			new Schema({v: {type: 'emails', min: 1, max: 2}}).apply({v: 'someone@somewhere.com, thing@thing.com, super@man.com'})
 		).to.throw();
+
+		expect(
+			new DotEnv().parse('EMAILS=').schema({EMAILS: {type: 'emails', required: false}}).value()
+		).to.deep.equal({
+			EMAILS: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('EMAILS=').schema({EMAILS: {type: 'emails', default: 'foo@bar.com, baz@quz.com'}}).value()
+		).to.deep.equal({
+			EMAILS: 'foo@bar.com, baz@quz.com',
+		});
 	});
 
 	it('float', ()=> {
@@ -270,6 +348,24 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(()=>
 			new Schema({v: {type: 'float', min: 1, max: 2}}).apply({v: 2.1})
 		).to.throw();
+
+		expect(
+			new DotEnv().parse('FLOAT=').schema({FLOAT: {type: 'float', required: false}}).value()
+		).to.deep.equal({
+			FLOAT: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('FLOAT=').schema({FLOAT: {type: 'float', default: '3.14'}}).value()
+		).to.deep.equal({
+			FLOAT: 3.14,
+		});
+
+		expect(
+			new DotEnv().parse('FLOAT=').schema({FLOAT: {type: 'float', default: 3.14}}).value()
+		).to.deep.equal({
+			FLOAT: 3.14,
+		});
 	});
 
 	it('keyvals', ()=> {
@@ -296,7 +392,7 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(
 			new DotEnv().parse('KEYVALS=').schema({KEYVALS: {type: 'keyvals', required: false, default: ''}}).value()
 		).to.deep.equal({
-			KEYVALS: {},
+			KEYVALS: undefined,
 		});
 
 		expect(
@@ -328,6 +424,30 @@ describe('dotenv.Schema (validation)', ()=> {
 				baz: {},
 			},
 		});
+
+		expect(
+			new DotEnv().parse('KEYVAL=').schema({KEYVAL: {type: 'keyvals', required: false}}).value()
+		).to.deep.equal({
+			KEYVAL: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('KEYVAL=').schema({KEYVAL: {type: 'keyvals', default: ''}}).value()
+		).to.deep.equal({
+			KEYVAL: {},
+		});
+
+		expect(
+			new DotEnv().parse('KEYVAL=').schema({KEYVAL: {type: 'keyvals', default: 'foo: 1'}}).value()
+		).to.deep.equal({
+			KEYVAL: {foo: '1'},
+		});
+
+		expect(
+			new DotEnv().parse('KEYVAL=').schema({KEYVAL: {type: 'keyvals', default: {foo: 1}}}).value()
+		).to.deep.equal({
+			KEYVAL: {foo: 1},
+		});
 	});
 
 	it('mongoUri', ()=> {
@@ -342,9 +462,19 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(()=>
 			new Schema({v: 'mongoUri'}).apply({v: 'thing.com'})
 		).to.throw();
+
+		expect(
+			new DotEnv().parse('MONGOURI=').schema({MONGOURI: {type: 'mongouri', required: false}}).value()
+		).to.deep.equal({
+			MONGOURI: undefined,
+		});
 	});
 
 	it('number', ()=> {
+		expect(
+			new Schema({v: {type: 'number', required: false}}).apply({v: ''})
+		).to.deep.equal({v: undefined})
+
 		expect(()=>
 			new Schema({v: {type: 'number', min: 10, max: 100}}).apply({v: 11})
 		).to.not.throw();
@@ -356,6 +486,24 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(()=>
 			new Schema({v: {type: 'number', min: 10, max: 100}}).apply({v: 101})
 		).to.throw();
+
+		expect(
+			new DotEnv().parse('NUMBER=').schema({NUMBER: {type: 'number', required: false}}).value()
+		).to.deep.equal({
+			NUMBER: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('NUMBER=').schema({NUMBER: {type: 'number', default: '123456'}}).value()
+		).to.deep.equal({
+			NUMBER: 123456,
+		});
+
+		expect(
+			new DotEnv().parse('NUMBER=').schema({NUMBER: {type: 'number', default: 123456}}).value()
+		).to.deep.equal({
+			NUMBER: 123456,
+		});
 	});
 
 	it('percent', ()=> {
@@ -378,6 +526,24 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(
 			new Schema({v: {type: 'percent', min: 10, max: 100}}).apply({v: '10'})
 		).to.be.deep.equal({v: 10})
+
+		expect(
+			new DotEnv().parse('PERCENT=').schema({PERCENT: {type: 'percent', required: false}}).value()
+		).to.deep.equal({
+			PERCENT: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('PERCENT=').schema({PERCENT: {type: 'percent', default: '13%'}}).value()
+		).to.deep.equal({
+			PERCENT: 13,
+		});
+
+		expect(
+			new DotEnv().parse('PERCENT=').schema({PERCENT: {type: 'percent', default: 13}}).value()
+		).to.deep.equal({
+			PERCENT: 13,
+		});
 	});
 
 
@@ -393,6 +559,24 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(()=>
 			new Schema({v: {type: 'set', min: 1, max: 3}}).apply({v: ['foo, bar,baz,quz']})
 		).to.throw();
+
+		expect(
+			new DotEnv().parse('SET=').schema({SET: {type: 'set', required: false}}).value()
+		).to.deep.equal({
+			SET: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('SET=').schema({SET: {type: 'set', default: 'Foo'}}).value()
+		).to.deep.equal({
+			SET: new Set(['Foo']),
+		});
+
+		expect(
+			new DotEnv().parse('SET=').schema({SET: {type: 'set', default: new Set(['Foo'])}}).value()
+		).to.deep.equal({
+			SET: new Set(['Foo']),
+		});
 	});
 
 	it('regexp', ()=> {
@@ -415,6 +599,24 @@ describe('dotenv.Schema (validation)', ()=> {
 		result = new Schema({v: {type: 'regexp', acceptPlain: true, plainPrefix: '^', plainSuffix: '$'}}).apply({v: 'foo'});
 		expect(result.v).to.be.an.instanceOf(RegExp);
 		expect(result.v.toString()).to.be.deep.equal('/^foo$/');
+
+		expect(
+			new DotEnv().parse('REGEXP=').schema({REGEXP: {type: 'regexp', required: false}}).value()
+		).to.deep.equal({
+			REGEXP: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('REGEXP=').schema({REGEXP: {type: 'regexp', default: '/a.c/'}}).value()
+		).to.deep.equal({
+			REGEXP: /a.c/,
+		});
+
+		expect(
+			new DotEnv().parse('REGEXP=').schema({REGEXP: {type: 'regexp', default: /a.c/}}).value()
+		).to.deep.equal({
+			REGEXP: /a.c/,
+		});
 	});
 
 	it('string', ()=> {
@@ -437,10 +639,23 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(()=>
 			new Schema({v: {type: 'string', enum: ['foo', 'bar', 'baz']}}).apply({v: 'BAZ!'})
 		).to.throw();
+
+		expect(
+			new DotEnv().parse('STRING=').schema({STRING: {type: 'string', required: false}}).value()
+		).to.deep.equal({
+			STRING: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('STRING=').schema({STRING: {type: 'string', default: 'foo'}}).value()
+		).to.deep.equal({
+			STRING: 'foo',
+		});
 	});
 
 	it('style', ()=> {
 		process.env.FORCE_COLOR = 3; // Force Chalk to be enabled
+
 		expect(()=>
 			new Schema({v: 'style'}).apply({v: 'bold red'})
 		).to.not.throw();
@@ -450,6 +665,24 @@ describe('dotenv.Schema (validation)', ()=> {
 
 		expect(new Schema({v: 'style'}).apply({v: 'bgWhite+fgBlack'})) // NOTE: These have to be in bg+fg order to keep Mocha's deep.equal happy
 			.to.be.deep.equal({v: chalk.bgWhite.black});
+
+		expect(
+			new DotEnv().parse('STYLE=').schema({STYLE: {type: 'style', required: false}}).value()
+		).to.deep.equal({
+			STYLE: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('STYLE=').schema({STYLE: {type: 'style', default: 'blue'}}).value()
+		).to.deep.equal({
+			STYLE: chalk.blue,
+		});
+
+		expect(
+			new DotEnv().parse('STYLE=').schema({STYLE: {type: 'style', defaultRaw: chalk.blue}}).value()
+		).to.deep.equal({
+			STYLE: chalk.blue,
+		});
 	});
 
 	it('uri', ()=> {
@@ -469,6 +702,21 @@ describe('dotenv.Schema (validation)', ()=> {
 		expect(config.v).to.have.property('protocol', 'https:');
 		expect(config.v).to.have.property('host', 'google.com.au');
 		expect(config.v).to.have.property('pathname', '/dir');
+
+		expect(
+			new DotEnv().parse('URI=').schema({URI: {type: 'uri', required: false}}).value()
+		).to.deep.equal({
+			URI: undefined,
+		});
+
+		expect(
+			new DotEnv().parse('URI=').schema({URI: {type: 'uri', default: 'https://google.com.au'}}).value()
+		).to.deep.equal({
+			URI: 'https://google.com.au',
+		});
+
+		let uri = new DotEnv().parse('URI=').schema({URI: {type: 'uri', default: 'https://google.com.au', parse: true}}).value().URI;
+		expect(uri.toString()).to.equal('https://google.com.au/');
 	});
 
 });
