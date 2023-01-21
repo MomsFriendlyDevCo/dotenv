@@ -468,6 +468,9 @@ describe('dotenv.Schema (validation)', ()=> {
 		).to.deep.equal({
 			MONGOURI: undefined,
 		});
+
+		let uri = new DotEnv().parse('URI=mongodb+srv://user:pass@server.mongodb.net/database').schema({URI: {type: 'mongouri', required: true, parse: true}}).value().URI;
+		expect(uri.toString()).to.equal('mongodb+srv://user:pass@server.mongodb.net/database');
 	});
 
 	it('number', ()=> {
