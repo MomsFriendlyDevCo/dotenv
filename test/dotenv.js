@@ -76,11 +76,13 @@ describe('dotenv', ()=> {
 				'FOO=Foo!',
 				'BAR=Bar!',
 				'FOOBAR=${FOO}-${BAR}',
+				"QUZ=${STATE['FOO']}",
 			].join('\n'))
 			.schema({
 				FOO: String,
 				BAR: String,
 				FOOBAR: String,
+				QUZ: String,
 			})
 			.template()
 			.value()
@@ -88,6 +90,7 @@ describe('dotenv', ()=> {
 			FOO: 'Foo!',
 			BAR: 'Bar!',
 			FOOBAR: 'Foo!-Bar!',
+			QUZ: 'Foo!',
 		});
 
 		expect(new DotEnv()
