@@ -444,6 +444,25 @@ describe('dotenv', ()=> {
 					},
 				},
 			});
+
+		expect(configFactory().set('FOO_BAR_BAR', new URL('http://localhost:8080')).toTree(/_+/).deep().camelCase().value())
+			.to.deep.equal({
+				foo: {
+					bar: {
+						foo: 'Foo!',
+						bar: new URL('http://localhost:8080'),
+						baz: true,
+						quz: ['Foo', 'Bar', 'Baz'],
+					},
+				},
+				bar: {
+					bar: {
+						foo: 'Foo2!',
+						bar: 456,
+						baz: false,
+					},
+				},
+			});
 	});
 
 });
